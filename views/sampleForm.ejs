@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+</head>
+
+<body>
+<div ng-app="" ng-controller="formController">
+  <form novalidate>
+    First Name:<br>
+    <input type="text" ng-model="user.firstName"><br>
+    Last Name:<br>
+    <input type="text" ng-model="user.lastName">
+    <br><br>
+    <button ng-click="reset()">RESET</button>
+    <button ng-click="submit()">SUBMIT</button>
+  </form>
+  <p>form = {{user}}</p>
+  <p>master = {{master}}</p>
+ 	<br>
+	<br>
+	<br>
+	Result:<br>
+	<li ng-repeat="x in Data">
+	 {{x.fname + " , " + x.id}}
+	</li>
+  
+</div>
+
+
+	<!-- <li ng-repeat="x in data"> -->
+	<!-- </li> -->
+<!-- </div> -->
+<script>
+function formController ($scope,$http) {
+    $scope.master = {firstName:"Tanmay", lastName:"Datta"};
+    $scope.Data = {firstName:"Tanmay", lastName:"Datta"};
+    // $scope.Data = "";
+    $scope.display = function () {
+		$http.get("/getUserData").success(function(response) 
+	    	{
+	    		console.log("success");
+	    		console.log(response);
+	    		$scope.Data = response;
+	    }).
+	    error(function(data, status, headers, config) {
+		    // called asynchronously if an error occurs
+		    // or server returns response with an error status.
+		    console.log("error");
+		  });
+		// console.log("hello");
+		// return "hello";
+	}
+    $scope.reset = function() {
+        $scope.user = angular.copy($scope.master);
+        $scope.display();
+        // console.log("hello");
+    }
+
+    $scope.submit = function() {
+        $http.get('/user?fname='+$scope.user.firstName+'&lname='+$scope.user.lastName).
+		  success(function(response) {
+		    // this callback will be called asynchronously
+		    // when the response is available
+		    // $scope.master = {firstName:response.firstName, last>Name:response.lastName};
+		    console.log(response);
+		    // console.log(response.message);
+		    // $scope.reset();
+
+		  }).
+		  error(function(data, status, headers, config) {
+		    // called asynchronously if an error occurs
+		    // or server returns response with an error status.
+		  });
+		  $scope.display();
+    };
+
+    $scope.reset();
+    
+}
+
+</script>
+
+</body>
+</html>
